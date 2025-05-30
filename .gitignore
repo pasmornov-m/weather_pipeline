@@ -1,0 +1,12 @@
+/minio_storage/
+.env
+/clickhouse/
+/data_lake/
+/logs/
+/postgres-db-volume/
+/spark_jars/
+/plugins/
+/config/
+**/__pycache__/
+/greenplum_data/
+/.kafka_producer/

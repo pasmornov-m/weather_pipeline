@@ -1,0 +1,4 @@
+confluent_kafka==2.10.0
+kafka_python==2.2.9
+python-dotenv==1.1.0
+Requests==2.32.3
