@@ -2,8 +2,7 @@ import time
 from datetime import datetime
 from config import API_KEY, KAFKA_TOPIC, KAFKA_FETCH_INTERVAL
 from clients.kafka_client import create_kafka_producer
-from utils.fetch_data import fetch_weather
-
+import requests
 
 CITY = 'Moscow'
 COUNTRY = 'ru'
@@ -11,6 +10,29 @@ url = f'http://api.openweathermap.org/data/2.5/weather?q={CITY},{COUNTRY}&APPID=
 
 producer = create_kafka_producer()
 
+def fetch_weather(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        result = {
+            "country": data["sys"]["country"],
+            "city": data.get("name"),
+            "timestamp": datetime.utcfromtimestamp(data["dt"]).isoformat(),
+            "temperature": data["main"]["temp"],
+            "feels_like": data["main"]["feels_like"],
+            "pressure": data["main"]["pressure"],
+            "humidity": data["main"]["humidity"],
+            "weather_main": data["weather"][0]["main"],
+            "weather_description": data["weather"][0]["description"],
+            "wind_speed": data["wind"]["speed"],
+            "wind_deg": data["wind"]["deg"],
+            "clouds": data["clouds"]["all"]
+        }
+        return result
+    except Exception as e:
+        print(f"[{datetime.utcnow().isoformat()}] Error fetching data: {e}")
+        return None
 
 def main():
     print(f"Starting weather producer, interval={KAFKA_FETCH_INTERVAL}s")

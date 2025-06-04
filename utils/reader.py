@@ -19,11 +19,11 @@ def load_offset_from_minio():
 
     if not client.bucket_exists(MINIO_TEMP_BUCKET):
         print(f"MinIO bucket '{MINIO_TEMP_BUCKET}' не существует")
-        return 0
+        return -1
 
     if not client.stat_object(MINIO_TEMP_BUCKET, OFFSET_FILE):
         print(f"Файл offset '{OFFSET_FILE}' не найден в MinIO")
-        return 0
+        return -1
 
     with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
         client.fget_object(MINIO_TEMP_BUCKET, OFFSET_FILE, tmp_file.name)
