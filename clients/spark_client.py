@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from config import SPARK_APP_NAME, SPARK_MASTER, MINIO_ACCESS_KEY, MINIO_SECRET_KEY, MINIO_ENDPOINT
+from config import SPARK_APP_NAME, SPARK_MASTER, SPARK_JARS_PATH, MINIO_ACCESS_KEY, MINIO_SECRET_KEY, MINIO_ENDPOINT
 
 
 def create_spark_session(app_name=SPARK_APP_NAME):
@@ -14,19 +14,5 @@ def create_spark_session(app_name=SPARK_APP_NAME):
     .config("spark.hadoop.fs.s3a.connection.ssl.enabled", "false") \
     .config("spark.hadoop.fs.s3a.aws.credentials.provider", "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider") \
     .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer") \
-    .config("spark.jars", ",".join([
-        "/home/maxp/Work/weather_pipeline/spark_jars/hadoop-aws-3.3.4.jar",
-        "/home/maxp/Work/weather_pipeline/spark_jars/aws-java-sdk-bundle-1.12.262.jar",
-        "/home/maxp/Work/weather_pipeline/spark_jars/postgresql-42.7.5.jar",
-        "/home/maxp/Work/weather_pipeline/spark_jars/wildfly-openssl-1.0.7.Final.jar",
-        "/home/maxp/Work/weather_pipeline/spark_jars/checker-qual-3.48.3.jar"
-    ])) \
+    .config("spark.jars", ",".join(SPARK_JARS_PATH)) \
     .getOrCreate()
-
-    # .config("spark.jars", ",".join([
-    #     "/opt/spark/spark_jars/hadoop-aws-3.3.4.jar",
-    #     "/opt/spark/spark_jars/jars/aws-java-sdk-bundle-1.12.262.jar",
-    #     "/opt/spark/spark_jars/postgresql-42.7.5.jar",
-    #     "/opt/spark/spark_jars/wildfly-openssl-1.0.7.Final.jar",
-    #     "/opt/spark/spark_jars/checker-qual-3.48.3.jar"
-    # ])) \

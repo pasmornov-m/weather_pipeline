@@ -41,6 +41,7 @@ def save_offset_to_minio(offset):
     os.remove(tmp_file_path)
 
 def write_to_postgres(df, table, properties):
+    df = df.dropDuplicates()
     df.write.jdbc(
         url=properties['url'],
         table=table,

@@ -37,8 +37,6 @@ def fetch_kafka_data(spark, raw_path, last_offset):
         last_offset = current_offset
     consumer.close()
 
-    print(records)
-
     normalized_records = [normalize_raw_data(r) for r in records]
     df_records = spark.createDataFrame(normalized_records, schema=RAW_WEATHER_SCHEMA)
 

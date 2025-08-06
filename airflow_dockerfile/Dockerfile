@@ -1,5 +1,11 @@
 FROM apache/airflow:2.10.3
 
+USER root
+RUN apt update && \
+    apt install -y openjdk-17-jdk curl
+
+USER airflow
+
 COPY requirements.txt /requirements.txt
 
 RUN python -m pip install --upgrade pip && \
@@ -8,9 +14,5 @@ RUN python -m pip install --upgrade pip && \
     --timeout 100 \
     --resume-retries 5 \
     -r /requirements.txt
-
-USER root
-RUN apt update && \
-    apt install -y openjdk-17-jdk curl
 
 USER airflow

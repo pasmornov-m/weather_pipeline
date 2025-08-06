@@ -1,4 +1,4 @@
-from minio import Minio
+from minio.error import S3Error
 import json
 import tempfile
 from clients.minio_client import create_minio_client
@@ -21,9 +21,13 @@ def load_offset_from_minio():
         print(f"MinIO bucket '{MINIO_TEMP_BUCKET}' не существует")
         return -1
 
-    if not client.stat_object(MINIO_TEMP_BUCKET, OFFSET_FILE):
-        print(f"Файл offset '{OFFSET_FILE}' не найден в MinIO")
-        return -1
+    try:
+        client.stat_object(MINIO_TEMP_BUCKET, OFFSET_FILE)
+    except S3Error as e:
+        if e.code == "NoSuchKey":
+            return -1
+        else:
+            raise e
 
     with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
         client.fget_object(MINIO_TEMP_BUCKET, OFFSET_FILE, tmp_file.name)
